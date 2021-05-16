@@ -1,6 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const Contacts = require('../../model/contacts')
+const {
+  validationCreateContact,
+  validationUpdateContact,
+} = require('../api/valid-contacts-route')
 
 router.get('/', async (req, res, next) => {
   try {
@@ -36,7 +40,7 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/', validationCreateContact, async (req, res, next) => {
   try {
     const contact = await Contacts.addContact(req.body)
     return res.status(201).json({
@@ -49,7 +53,7 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', validationUpdateContact, async (req, res, next) => {
   try {
     const contact = await Contacts.updateContact(req.params.id, req.body)
     if (contact) {
@@ -69,6 +73,7 @@ router.put('/:id', async (req, res, next) => {
     next(err)
   }
 })
+
 router.delete('/:id', async (req, res, next) => {
   try {
     const contact = await Contacts.removeContact(req.params.id)
@@ -90,8 +95,8 @@ router.delete('/:id', async (req, res, next) => {
   }
 })
 
-router.patch('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+// router.patch('/:contactId', async (req, res, next) => {
+//   res.json({ message: 'template message' })
+// })
 
 module.exports = router
